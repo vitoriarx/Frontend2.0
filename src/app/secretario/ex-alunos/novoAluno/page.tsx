@@ -14,7 +14,7 @@ const schema = z.object({
     .max(120, "Nome deve ter entre 3 e 120 caracteres")
     .regex(/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÊÍÏÓÔÕÖÚÇÑ\s]+$/, "Nome deve conter apenas letras, espaços e acentos"),
   data_nascimento: z.string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, "Data deve estar no formato AAAA-MM-DD"), // ✅ Formato correto
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Data deve estar no formato AAAA-MM-DD"),
   nome_pai: z.string().min(3).max(120).optional().or(z.literal("")),
   nome_mae: z.string().min(3).max(120).optional().or(z.literal("")),
   cpf: z.string().regex(/^\d{11}$/, "CPF deve conter exatamente 11 números").optional().or(z.literal("")),
@@ -61,100 +61,136 @@ export default function CadastroExAlunoPage() {
   };
 
   return (
-    <div className="p-6 max-w-xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Novo Ex-Aluno</h1>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div>
-          <label className="block">Nome Completo</label>
-          <input 
-            type="text" 
-            {...register("nome_completo")} 
-            className="border p-2 w-full" 
-          />
-          {errors.nome_completo && (
-            <p className="text-red-500 text-sm">{errors.nome_completo.message}</p>
-          )}
-        </div>
+    <div className="max-w-ws-screen bg-gray-50 py-0 px-1 sm:px-1 lg:px-1">
+      <div className="max-w-[500px] mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+        <div className="p-6">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-extrabold text-gray-900">Novo Ex-Aluno</h1>
+            <p className="mt-2 text-sm text-gray-600">Preencha os dados do ex-aluno</p>
+          </div>
 
-        <div>
-          <label className="block">Data de Nascimento</label>
-          <input 
-            type="date" // ✅ Usar type="date" para formato YYYY-MM-DD
-            {...register("data_nascimento")} 
-            className="border p-2 w-full"
-          />
-          {errors.data_nascimento && (
-            <p className="text-red-500 text-sm">{errors.data_nascimento.message}</p>
-          )}
-        </div>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div>
+              <label htmlFor="nome_completo" className="block text-sm font-medium text-gray-700">
+                Nome Completo
+              </label>
+              <input
+                id="nome_completo"
+                type="text"
+                {...register("nome_completo")}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                placeholder="Digite o nome completo"
+              />
+              {errors.nome_completo && (
+                <p className="mt-1 text-sm text-red-600">{errors.nome_completo.message}</p>
+              )}
+            </div>
 
-        <div>
-          <label className="block">Nome do Pai</label>
-          <input 
-            type="text" 
-            {...register("nome_pai")} 
-            className="border p-2 w-full" 
-          />
-        </div>
+            <div>
+              <label htmlFor="data_nascimento" className="block text-sm font-medium text-gray-700">
+                Data de Nascimento
+              </label>
+              <input
+                id="data_nascimento"
+                type="date"
+                {...register("data_nascimento")}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              />
+              {errors.data_nascimento && (
+                <p className="mt-1 text-sm text-red-600">{errors.data_nascimento.message}</p>
+              )}
+            </div>
 
-        <div>
-          <label className="block">Nome da Mãe</label>
-          <input 
-            type="text" 
-            {...register("nome_mae")} 
-            className="border p-2 w-full" 
-          />
-          {errors.nome_pai && (
-            <p className="text-red-500 text-sm">{errors.nome_pai.message}</p>
-          )}
-        </div>
+            <div>
+              <label htmlFor="nome_pai" className="block text-sm font-medium text-gray-700">
+                Nome do Pai (Opcional)
+              </label>
+              <input
+                id="nome_pai"
+                type="text"
+                {...register("nome_pai")}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                placeholder="Nome completo do pai"
+              />
+            </div>
 
-        <div>
-          <label className="block">CPF (apenas números)</label>
-          <input 
-            type="text" 
-            {...register("cpf")} 
-            className="border p-2 w-full"
-            placeholder="12345678901" // ✅ Apenas números
-            maxLength={11}
-          />
-          {errors.cpf && (
-            <p className="text-red-500 text-sm">{errors.cpf.message}</p>
-          )}
-        </div>
+            <div>
+              <label htmlFor="nome_mae" className="block text-sm font-medium text-gray-700">
+                Nome da Mãe (Opcional)
+              </label>
+              <input
+                id="nome_mae"
+                type="text"
+                {...register("nome_mae")}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                placeholder="Nome completo da mãe"
+              />
+              {errors.nome_pai && (
+                <p className="mt-1 text-sm text-red-600">{errors.nome_pai.message}</p>
+              )}
+            </div>
 
-        <div>
-          <label className="block">BOX (ano - 4 dígitos)</label>
-          <input 
-            type="text" 
-            {...register("box")} 
-            className="border p-2 w-full"
-            placeholder="2024"
-            maxLength={4}
-          />
-          {errors.box && (
-            <p className="text-red-500 text-sm">{errors.box.message}</p>
-          )}
-        </div>
+            <div>
+              <label htmlFor="cpf" className="block text-sm font-medium text-gray-700">
+                CPF (Opcional)
+              </label>
+              <input
+                id="cpf"
+                type="text"
+                {...register("cpf")}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                placeholder="Apenas números (11 dígitos)"
+                maxLength={11}
+              />
+              {errors.cpf && (
+                <p className="mt-1 text-sm text-red-600">{errors.cpf.message}</p>
+              )}
+            </div>
 
-        <div className="flex gap-4 pt-4">
-          <button 
-            type="submit" 
-            disabled={isSubmitting}
-            className="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white px-4 py-2 rounded"
-          >
-            {isSubmitting ? "Cadastrando..." : "Cadastrar"}
-          </button>
-          
-          <button
-            type="button"
-            onClick={() => router.push('/secretario')}
-            className="bg-gray-500 hover:bg-gray-700 text-white px-4 py-2 rounded"
-          >
-            Cancelar
-          </button>
+            <div>
+              <label htmlFor="box" className="block text-sm font-medium text-gray-700">
+                BOX (Ano)
+              </label>
+              <input
+                id="box"
+                type="text"
+                {...register("box")}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                placeholder="4 dígitos (ex: 2024)"
+                maxLength={4}
+              />
+              {errors.box && (
+                <p className="mt-1 text-sm text-red-600">{errors.box.message}</p>
+              )}
+            </div>
+
+            <div className="flex space-x-4">
+              <button
+                type="button"
+                onClick={() => router.push('/secretario')}
+                className="w-full flex justify-center py-4 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full flex justify-center py-4 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Cadastrando...
+                  </>
+                ) : "Cadastrar"}
+              </button>
+            </div>
+          </form>
         </div>
-      </form>
+      </div>
     </div>
   );
 }
