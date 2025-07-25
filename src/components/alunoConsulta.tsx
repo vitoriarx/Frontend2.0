@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { Search, PlusCircle, Eye, EyeOff, Edit } from "lucide-react";
 
 export interface Aluno {
   id: string; 
@@ -30,10 +31,9 @@ export default function AlunoConsulta({ titulo, alunos }: AlunoConsultaProps) {
     toast.info("Consulta registrada.");
   };
 
-  // Função para navegar para novo aluno
   const handleNovoAluno = () => {
     toast.info("Redirecionando para cadastro de novo aluno...");
-    router.push("/secretario/ex-alunos/novoAluno"); // ou a rota que você usar
+    router.push("/secretario/ex-alunos/novoAluno");
   };
 
   const alunosFiltrados = alunos.filter((aluno) => {
@@ -49,97 +49,146 @@ export default function AlunoConsulta({ titulo, alunos }: AlunoConsultaProps) {
   });
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">{titulo}</h1>
+    <div className="bg-white rounded-xl shadow-md p-6">
+      {/* Cabeçalho */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+        <h1 className="text-3xl font-bold text-gray-800">{titulo}</h1>
         
-        {/* Botão Novo Aluno */}
         <button
           onClick={handleNovoAluno}
-          className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded font-medium"
+          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg font-medium transition-colors shadow-md"
         >
-          + Novo Aluno
+          <PlusCircle size={20} />
+          Novo Aluno
         </button>
       </div>
       
-      <div className="mb-6 flex flex-col md:flex-row gap-4">
-        <div className="flex-1">
-          <label className="block text-sm font-medium mb-1">Buscar por Nome</label>
-          <input
-            type="text"
-            value={filtroNome}
-            onChange={(e) => setFiltroNome(e.target.value)}
-            placeholder="Digite o nome completo"
-            className="border p-2 w-full"
-          />
+      {/* Filtros */}
+      <div className="mb-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="relative">
+          <label className="block text-sm font-medium text-gray-700 mb-2">Buscar por Nome</label>
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+            <input
+              type="text"
+              value={filtroNome}
+              onChange={(e) => setFiltroNome(e.target.value)}
+              placeholder="Digite o nome completo"
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+            />
+          </div>
         </div>
-        <div className="flex-1">
-          <label className="block text-sm font-medium mb-1">Buscar por CPF</label>
-          <input
-            type="text"
-            value={filtroCpf}
-            onChange={(e) => setFiltroCpf(e.target.value)}
-            placeholder="Digite o CPF (opcional)"
-            className="border p-2 w-full"
-          />
+        
+        <div className="relative">
+          <label className="block text-sm font-medium text-gray-700 mb-2">Buscar por CPF</label>
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+            <input
+              type="text"
+              value={filtroCpf}
+              onChange={(e) => setFiltroCpf(e.target.value)}
+              placeholder="Digite o CPF (opcional)"
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+            />
+          </div>
         </div>
       </div>
 
+      {/* Tabela de resultados */}
       {alunosFiltrados.length === 0 ? (
-        <p className="text-gray-600">Nenhum aluno encontrado.</p>
+        <div className="bg-gray-50 rounded-lg p-8 text-center">
+          <p className="text-gray-600 text-lg">Nenhum aluno encontrado com os filtros atuais.</p>
+        </div>
       ) : (
-        <table className="w-full border border-gray-300">
-          <thead>
-            <tr>
-              <th className="border p-2">Nome</th>
-              <th className="border p-2">Nascimento</th>
-              <th className="border p-2">Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {alunosFiltrados.map((aluno) => (
-              <React.Fragment key={aluno.id}>
-                <tr>
-                  <td className="border p-2">{aluno.nome_completo}</td>
-                  <td className="border p-2">{aluno.data_nascimento}</td>
-                  <td className="border p-2">
-                    <button
-                      onClick={() =>
-                        exibindoId === aluno.id
-                          ? setExibindoId(null)
-                          : handleVerFicha(aluno.id)
-                      }
-                      className="bg-blue-600 text-white px-3 py-1 rounded"
-                    >
-                      {exibindoId === aluno.id ? "Ocultar Ficha" : "Ver Ficha"}
-                    </button>
-                  </td>
-                </tr>
-                {exibindoId === aluno.id && (
-                  <tr>
-                    <td colSpan={3} className="bg-gray-100 p-4 border">
-                      <p><strong>Nome do Pai:</strong> {aluno.nome_pai || "-"}</p>
-                      <p><strong>Nome da Mãe:</strong> {aluno.nome_mae || "-"}</p>
-                      <p><strong>CPF:</strong> {aluno.cpf || "-"}</p>
-                      <p><strong>BOX:</strong> {aluno.box}</p>
-                      <div className="mt-4">
+        <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nascimento</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {alunosFiltrados.map((aluno) => (
+                <React.Fragment key={aluno.id}>
+                  <tr className="hover:bg-gray-50 transition-colors">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{aluno.nome_completo}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{aluno.data_nascimento}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <div className="flex gap-2">
                         <button
-                          onClick={() => {
-                            toast.info("Redirecionando para edição...");
-                            router.push(`/secretario/ex-alunos/editarAluno/${aluno.id}`);
-                          }}
-                          className="bg-yellow-500 text-white px-4 py-2 rounded"
+                          onClick={() =>
+                            exibindoId === aluno.id
+                              ? setExibindoId(null)
+                              : handleVerFicha(aluno.id)
+                          }
+                          className={`flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                            exibindoId === aluno.id 
+                              ? "bg-gray-200 text-gray-800 hover:bg-gray-300" 
+                              : "bg-blue-100 text-blue-800 hover:bg-blue-200"
+                          }`}
                         >
-                          Editar Aluno
+                          {exibindoId === aluno.id ? (
+                            <>
+                              <EyeOff size={16} />
+                              Ocultar
+                            </>
+                          ) : (
+                            <>
+                              <Eye size={16} />
+                              Ver Ficha
+                            </>
+                          )}
                         </button>
                       </div>
                     </td>
                   </tr>
-                )}
-              </React.Fragment>
-            ))}
-          </tbody>
-        </table>
+                  {exibindoId === aluno.id && (
+                    <tr>
+                      <td colSpan={3} className="px-6 py-4 bg-blue-50 border-t">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4">
+                          <div className="space-y-3">
+                            <div>
+                              <h3 className="text-sm font-medium text-gray-500">Nome do Pai</h3>
+                              <p className="mt-1 text-sm text-gray-900">{aluno.nome_pai || "-"}</p>
+                            </div>
+                            <div>
+                              <h3 className="text-sm font-medium text-gray-500">Nome da Mãe</h3>
+                              <p className="mt-1 text-sm text-gray-900">{aluno.nome_mae || "-"}</p>
+                            </div>
+                          </div>
+                          <div className="space-y-3">
+                            <div>
+                              <h3 className="text-sm font-medium text-gray-500">CPF</h3>
+                              <p className="mt-1 text-sm text-gray-900">{aluno.cpf || "-"}</p>
+                            </div>
+                            <div>
+                              <h3 className="text-sm font-medium text-gray-500">BOX</h3>
+                              <p className="mt-1 text-sm text-gray-900">{aluno.box}</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="mt-4 flex justify-end">
+                          <button
+                            onClick={() => {
+                              toast.info("Redirecionando para edição...");
+                              router.push(`/secretario/ex-alunos/editarAluno/${aluno.id}`);
+                            }}
+                            className="flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-md font-medium transition-colors"
+                          >
+                            <Edit size={16} />
+                            Editar Aluno
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );
