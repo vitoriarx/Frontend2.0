@@ -15,7 +15,7 @@ export default function Administrador() {
 
         <button
           onClick={() => router.push("/admin")}
-          className="flex items-center gap-2 w-full px-4 py-2 rounded hover:bg-gray-700"
+          className="flex items-center gap-2 w-full px- py-2 rounded hover:bg-gray-700 text-xl"
         >
           <Home size={18} />
           Tela Inicial
@@ -23,7 +23,7 @@ export default function Administrador() {
 
         <button
           onClick={() => router.push("/admin/secretarios/novoSecretario")}
-          className="flex items-center gap-2 w-full px-4 py-2 rounded hover:bg-gray-700"
+          className="flex items-center gap-2 w-full px-2 py-2 rounded hover:bg-gray-700 text-xl"
         >
           <UserPlus size={18} />
           Cadastrar Secretários
@@ -31,7 +31,7 @@ export default function Administrador() {
 
         <button
           onClick={() => router.push("/admin/historico-consultas")}
-          className="flex items-center gap-2 w-full px-4 py-2 rounded hover:bg-gray-700"
+          className="flex items-center gap-2 w-full px-2 py-2 rounded hover:bg-gray-700 text-xl"
         >
           <FileText size={18} />
           Ver Histórico de Consultas
